@@ -27,13 +27,17 @@ def restaurants():
 def pizza():
     return [za.to_dict() for za in Pizza.query.all()]
 
-@app.route('/restaurants/<int:id>', methods=['GET'])
+@app.route('/restaurants/<int:id>', methods=['GET', 'DELETE'])
 def rest_by_id(id):
     one_rest = Restaurant.query.filter_by(id=id).first()
     if one_rest == None:
         return make_response({"error": "Restaurant not found"}, 404)
     elif request.method == 'GET':
         return make_response(one_rest.to_dict(rules=('pizzas',)), 200)
+    elif request.method == 'DELETE':
+        db.session.delete(one_rest)
+        db.session.commit()
+        return make_response('', 204)
 
 
 
