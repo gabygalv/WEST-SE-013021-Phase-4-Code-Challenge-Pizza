@@ -34,12 +34,27 @@ def rest_by_id(id):
         return make_response({"error": "Restaurant not found"}, 404)
     elif request.method == 'GET':
         return make_response(one_rest.to_dict(rules=('pizzas',)), 200)
+#DELETE
     elif request.method == 'DELETE':
         db.session.delete(one_rest)
         db.session.commit()
         return make_response('', 204)
-
-
+#POST
+@app.route('/restaurant_pizzas', methods = ['POST'])
+def post_rp():
+    new = request.get_json()
+    new_rp = RestaurantPizza(
+        price = new['price'],
+        pizza_id = new['pizza_id'],
+        restaurant_id = new['restaurant_id']
+    )
+    db.session.add(new_rp)
+    db.session.commit()
+    try:
+        return make_response(new_rp.to_dict(rules=('pizza', '-restaurant')), 201)
+    except ValueError:
+        return make_response({'error': ['Invalid input']}, 400) 
+        
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

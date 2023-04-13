@@ -48,11 +48,11 @@ class RestaurantPizza(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
-    serialize_rules = ('-created_at', '-updated_at')
+    serialize_rules = ('-created_at', '-updated_at', '-id', '-pizza_id', '-restaurant_id', '-price',)
 
     @validates('price')
     def validate_price(self, key, price):
-        if 1 <= price <= 30:
+        if 1 < price < 30:
             return price
         raise ValueError('Price must be between 1 and 30')
 
